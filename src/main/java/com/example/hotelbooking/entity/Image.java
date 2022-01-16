@@ -1,6 +1,11 @@
 package com.example.hotelbooking.entity;
 
 import javax.persistence.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 @Entity
 @Table(name = "images")
@@ -16,12 +21,20 @@ public class Image {
     @Column(name = "picture_bytes", nullable = false)
     private byte[] pictureBytes;
 
+    public Image(String name, byte[] pictureBytes) {
+        this.name = name;
+        this.pictureBytes = compressBytes(pictureBytes);
+    }
+
+    public Image() {
+    }
+
     public byte[] getPictureBytes() {
-        return pictureBytes;
+        return decompressBytes(pictureBytes);
     }
 
     public void setPictureBytes(byte[] pictureBytes) {
-        this.pictureBytes = pictureBytes;
+        this.pictureBytes = compressBytes(pictureBytes);
     }
 
     public String getName() {
@@ -38,5 +51,40 @@ public class Image {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    private static byte[] compressBytes(byte[] data) {
+        Deflater deflater = new Deflater();
+        deflater.setInput(data);
+        deflater.finish();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        try {
+            outputStream.close();
+        } catch (IOException ignored) {
+        }
+        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+        return outputStream.toByteArray();
+    }
+
+    // uncompress the image bytes before returning it to the angular application
+    private static byte[] decompressBytes(byte[] data) {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        try {
+            while (!inflater.finished()) {
+                int count = inflater.inflate(buffer);
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.close();
+        } catch (IOException | DataFormatException ignored) {
+        }
+        return outputStream.toByteArray();
     }
 }

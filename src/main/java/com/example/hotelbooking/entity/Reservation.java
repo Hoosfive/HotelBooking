@@ -2,7 +2,7 @@ package com.example.hotelbooking.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 
 @Entity
 @Table(name = "reservations")
@@ -21,7 +21,7 @@ public class Reservation {
     private Room room;
 
     @Column(name = "date_start", nullable = false)
-    private Instant dateStart;
+    private Timestamp dateStart;
 
     @Column(name = "date_end", nullable = false)
     private Timestamp dateEnd;
@@ -30,15 +30,23 @@ public class Reservation {
         return dateEnd;
     }
 
+    public String getDateEndAsString() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(dateEnd.getTime());
+    }
+
+    public String getDateStartAsString() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(dateStart.getTime());
+    }
+
     public void setDateEnd(Timestamp dateEnd) {
         this.dateEnd = dateEnd;
     }
 
-    public Instant getDateStart() {
+    public Timestamp getDateStart() {
         return dateStart;
     }
 
-    public void setDateStart(Instant dateStart) {
+    public void setDateStart(Timestamp dateStart) {
         this.dateStart = dateStart;
     }
 

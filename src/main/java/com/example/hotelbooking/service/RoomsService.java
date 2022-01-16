@@ -4,15 +4,14 @@ package com.example.hotelbooking.service;
 import com.example.hotelbooking.ObjectNotFoundException;
 import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.repository.RoomsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class RoomsService {
 
-    @Autowired
-    RoomsRepository roomsRepository;
+    private final RoomsRepository roomsRepository;
 
     public RoomsService(RoomsRepository roomsRepository) {
         this.roomsRepository = roomsRepository;
@@ -26,12 +25,12 @@ public class RoomsService {
         return (List<Room>) roomsRepository.findAll();
     }
 
-    public Room save(Room room) {
-        return roomsRepository.save(room);
+    public void save(Room room) {
+        roomsRepository.save(room);
     }
 
-    public Room update(Room room) {
-        return roomsRepository.save(room);
+    public void update(Room room) {
+        roomsRepository.save(room);
     }
 
     public void remove(Long id) {

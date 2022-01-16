@@ -1,4 +1,4 @@
-package com.example.hotelbooking;
+package com.example.hotelbooking.config.security;
 
 
 import com.example.hotelbooking.entity.Role;

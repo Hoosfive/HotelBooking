@@ -2,11 +2,191 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Список номеров гостиницы</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link href="/css/headers.css" rel="stylesheet">
+    <link href="/css/card.css" rel="stylesheet">
+
+    <title>Hotel Booking - Rooms</title>
 </head>
 <body>
-<ul th:each="room : ${rooms}">
-    <li th:text="${room.roomNumber} ${room.price} ${room.floor}"></li>
-</ul>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="booking" viewBox="0 0 118 94">
+        <title>Booking</title>
+        <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+    </symbol>
+</svg>
+
+<!--------------ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ------------------->
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#booking"/>
+                </svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/home" class="nav-link px-2 text-white">Домашняя</a></li>
+                <li><a href="/rooms" class="nav-link px-2 text-secondary">Номера</a></li>
+                <li><a href="/reservations" class="nav-link px-2 text-white">Бронирования</a></li>
+                <li><a href="/users" class="nav-link px-2 text-white">Пользователи</a></li>
+                <li><a href="/about" class="nav-link px-2 text-white">О нас</a></li>
+            </ul>
+
+            <div class="text-end">
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Выйти" class="btn btn-outline-light me-2">
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+<!--------------/ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ------------------->
+
+<!--------------КОНТЕЙНЕР КАРТОЧЕК КОМНАТ------------------->
+<div class="container">
+    <div class="row row-cols-3 g-4">
+        <div class="col" th:each="room, i : ${rooms}">
+            <div class="card text-center border-dark m-3">
+
+                <!--------------КАРУСЕЛЬ ФОТОГРАФИЙ НА КАРТОЧКЕ------------------->
+                <div th:id="'myCarousel' + ${i.index}" class="carousel slide" data-bs-ride="carousel">
+
+                    <div class="carousel-inner">
+
+                        <div th:unless="${room.getImages().isEmpty()}" th:each="image, i : ${room.getImages()}"
+                             class="carousel-item" th:classappend="${i.index == 0} ? 'active' : '' ">
+                            <img th:src="'/images/' + ${image.getId()}" class="d-block w-100" alt="Фото номера">
+                        </div>
+
+                        <div class="carousel-item" th:classappend="${room.getImages().isEmpty()} ? 'active' : ''"
+                             sec:authorize="hasAuthority('ROLE_ADMIN')">
+                            <form th:action="@{'/rooms/{room_id}/addImage'(room_id=${room.getId()})}"
+                                  method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <div class="mb-3">
+                                        <input class="form-control" type="file" id="formFile" name="file">
+                                    </div>
+                                    <button type="submit" class="btn btn-dark">Загрузить фото номера</button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <div class="carousel-item active" sec:authorize="!hasAuthority('ROLE_ADMIN')"
+                             th:if="${room.getImages().isEmpty()}">
+                            <img src="/image/placeholder.png" class="d-block w-100" alt="Нет фото">
+                        </div>
+
+                    </div>
+                    <button class="carousel-control-prev" type="button" th:data-bs-target="'#myCarousel' + ${i.index}"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" th:data-bs-target="'#myCarousel' + ${i.index}"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <!--------------/КАРУСЕЛЬ ФОТОГРАФИЙ НА КАРТОЧКЕ------------------->
+
+                <!--------------ТЕЛО КАРТОЧКИ------------------->
+                <div class="card-body">
+                    <h5 class="card-title"
+                        th:text="'Этаж №' + ${room.getFloor()} + ', комната №' + ${room.getRoomNumber()}"></h5>
+                    <p class="card-title" th:text="'Стоимость: ' + ${room.getPrice()} + '₽/сут.'"></p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal"
+                            data-bs-whatever="@getbootstrap">Забронировать
+                    </button>
+
+                    <form sec:authorize="hasAuthority('ROLE_ADMIN')"
+                          th:action="@{'/rooms/delete/{id}'(id=${room.getId()})}" method="POST">
+                        <button type="submit" class="btn btn btn-danger mt-2">
+                            Удалить
+                        </button>
+                    </form>
+                </div>
+                <!--------------/ТЕЛО КАРТОЧКИ------------------->
+
+            </div>
+        </div>
+        <!--------------КАРТОЧКА ДЛЯ ДОБАВЛЕНИЯ КОМНАТ------------------->
+        <div class="col" sec:authorize="hasAuthority('ROLE_ADMIN')">
+            <div class="add-card card text-center border-dark m-3">
+                <form th:action="@{/rooms/add}" th:object="${new_room}" method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="mb-3">
+                            <input class="form-control" type="file" name="file">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input type="text" placeholder="Этаж №" class="form-control"
+                                   th:field="${new_room.roomNumber}">
+                            <input type="text" placeholder="комната №" class="form-control"
+                                   th:field="${new_room.floor}">
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" th:field="${new_room.price}"
+                                   placeholder="Стоимость суток проживания">
+                            <span class="input-group-text">₽/сут.</span>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">
+                            Добавить номер
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--------------/КАРТОЧКА ДЛЯ ДОБАВЛЕНИЯ КОМНАТ------------------->
+
+    </div>
+</div>
+<!--------------/КОНТЕЙНЕР КАРТОЧЕК КОМНАТ------------------->
+
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>

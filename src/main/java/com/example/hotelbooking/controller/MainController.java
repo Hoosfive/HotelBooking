@@ -9,6 +9,26 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class MainController {
 
+    @RequestMapping("/")
+    public String rootPath() {
+        return "home";
+    }
+
+    @RequestMapping("/home")
+    public String home() {
+        return "home";
+    }
+
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @RequestMapping("/about")
+    public String about() {
+        return "about";
+    }
+
     @RequestMapping("/errorsNotificator")
     public ModelAndView errorsHandler(@RequestParam() String error, @RequestParam() String referer, RedirectAttributes redirectAttributes) {
         ModelAndView modelAndView = new ModelAndView("redirect:" + referer);
@@ -19,4 +39,6 @@ public class MainController {
         redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         return modelAndView;
     }
+
+
 }

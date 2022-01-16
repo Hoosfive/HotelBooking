@@ -1,6 +1,7 @@
 package com.example.hotelbooking.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,6 +32,13 @@ public class Room {
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    public void addImage(Image image) {
+        if (images == null) {
+            images = new HashSet<>();
+        }
+        images.add(image);
     }
 
     public Integer getFloor() {

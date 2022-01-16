@@ -1,54 +1,43 @@
 package com.example.hotelbooking.controller;
 
-import com.example.hotelbooking.entity.User;
-import com.example.hotelbooking.service.UsersService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import com.example.hotelbooking.entity.Image;
+import com.example.hotelbooking.service.ImagesService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@Controller
-@RequestMapping("/users")
-public class UserController {
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-    private final UsersService usersService;
+@RestController
+@RequestMapping("/images")
+public class ImagesController {
 
-    public UserController(UsersService usersService) {
-        this.usersService = usersService;
+    private final ImagesService imagesService;
+
+    public ImagesController(ImagesService imagesService) {
+        this.imagesService = imagesService;
     }
 
-    @GetMapping("/{user_id}")
-    public String getUser(@PathVariable Long user_id, Model model) {
-        model.addAttribute("users", usersService.get(user_id));
-        return "users";
-    }
-
-    @GetMapping
-    public String getUsers(Model model, @ModelAttribute(name = "errorMessage") String errorMessage) {
-        model.addAttribute("users", usersService.getAll());
-        if (errorMessage != null)
-            if (!errorMessage.isEmpty())
-                model.addAttribute("error", errorMessage);
-        return "users";
+    @GetMapping("/{image_id}")
+    public void getImage(@PathVariable Long image_id, HttpServletResponse response) throws IOException {
+        Image image = imagesService.get(image_id);
+        String imageExtension = image.getName().substring(image.getName().lastIndexOf("."));
+        response.setContentType("image/" + (imageExtension.isEmpty() ? "jpeg" : imageExtension));
+        InputStream is = new ByteArrayInputStream(image.getPictureBytes());
+        IOUtils.copy(is, response.getOutputStream());
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute(value = "user") User user, Model model) {
-        usersService.save(user);
-        model.addAttribute("users", usersService.getAll());
-        return "redirect:/users";
+    public void uploadImage(@RequestParam(value = "file") MultipartFile file) {
+
+        imagesService.save(file);
     }
 
-    @PostMapping("/edit")
-    public String editUser(@ModelAttribute(value = "user") User user, Model model) {
-        usersService.update(user);
-        model.addAttribute("users", usersService.getAll());
-        return "redirect:/users";
-    }
-
-    @PostMapping("/delete/{user_id}")
-    public String deleteUser(@PathVariable Long user_id, Model model) {
-        usersService.remove(user_id);
-        model.addAttribute("users", usersService.getAll());
-        return "redirect:/users";
+    @PostMapping("/delete/{image_id}")
+    public void deleteImage(@PathVariable Long image_id) {
+        imagesService.remove(image_id);
     }
 }

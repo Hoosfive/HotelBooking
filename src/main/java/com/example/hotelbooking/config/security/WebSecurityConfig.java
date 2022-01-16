@@ -1,7 +1,5 @@
-package com.example.hotelbooking.config;
+package com.example.hotelbooking.config.security;
 
-import com.example.hotelbooking.config.security.CustomAccessDeniedHandler;
-import com.example.hotelbooking.config.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,14 +50,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-					.antMatchers("/").permitAll()
+					.antMatchers("/", "/home", "/js/**", "/css/**").permitAll()
 					.mvcMatchers(HttpMethod.POST, "/rooms/**", "/reservations/**", "/users/**")
 					.hasRole("ADMIN")
 					.anyRequest()
 					.authenticated()
 				.and()
 					.formLogin()
-//					.loginPage("/login")
+					.loginPage("/login")
 					.permitAll()
 				.and()
 					.logout()

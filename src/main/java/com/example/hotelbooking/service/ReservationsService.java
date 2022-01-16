@@ -3,7 +3,6 @@ package com.example.hotelbooking.service;
 import com.example.hotelbooking.ObjectNotFoundException;
 import com.example.hotelbooking.entity.Reservation;
 import com.example.hotelbooking.repository.ReservationsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,7 @@ import java.util.List;
 @Service
 public class ReservationsService {
 
-    @Autowired
-    ReservationsRepository reservationsRepository;
+    private final ReservationsRepository reservationsRepository;
 
     public ReservationsService(ReservationsRepository reservationsRepository) {
         this.reservationsRepository = reservationsRepository;
@@ -26,12 +24,12 @@ public class ReservationsService {
         return (List<Reservation>) reservationsRepository.findAll();
     }
 
-    public Reservation save(Reservation reservation) {
-        return reservationsRepository.save(reservation);
+    public void save(Reservation reservation) {
+        reservationsRepository.save(reservation);
     }
 
-    public Reservation update(Reservation reservation) {
-        return reservationsRepository.save(reservation);
+    public void update(Reservation reservation) {
+        reservationsRepository.save(reservation);
     }
 
     public void remove(Long id) {
