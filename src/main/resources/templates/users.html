@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Список номеров гостиницы</title>
+</head>
+<body>
+<div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+<ul th:each="room : ${rooms}">
+    <li th:text="${room.roomNumber} + ' ' + ${room.price} + ' ' + ${room.floor}">
+    </li>
+    <form action="#" th:action="@{'/rooms/delete/{id}'(id=${room.id})}" method="POST">
+        <button type="submit" class="btn">
+            Удалить
+        </button>
+    </form>
+</ul>
+<!--<br>
+<form action="#" th:action="@{'/rooms/add'(id=${room.id})}" method="POST" >
+    <button type="submit" class="btn" >
+        Добавить
+    </button>
+</form>-->
+</body>
+</html>
