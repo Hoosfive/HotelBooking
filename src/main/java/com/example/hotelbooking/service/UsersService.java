@@ -14,55 +14,47 @@ import java.util.List;
 
 @Service
 public class UsersService {
-
-    private final UsersRepository usersRepository;
-
-    private final RolesRepository rolesRepository;
-
-
-    public UsersService(UsersRepository usersRepository, RolesRepository rolesRepository, ImagesRepository imagesRepository) {
-        this.usersRepository = usersRepository;
-        this.rolesRepository = rolesRepository;
-    }
-
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-    public User get(Long id) {
-        return usersRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(User.class, id));
-    }
-
-    public User getByName(String name) {
-        return usersRepository.findByName(name);
-    }
-
-    public List<User> getAll() {
-        return (List<User>) usersRepository.findAll();
-    }
-
-    public void save(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(rolesRepository.findById(1).orElseThrow(() -> new ObjectNotFoundException(Role.class, 1L)));
-//        user.setRoles(roles);
-        //user.setImage(imagesRepository.findFirstByIdIsNear(1L));
-        usersRepository.save(user);
-    }
-
-    public void update(User user) {
-        usersRepository.save(user);
-    }
-
-    public void remove(Long id) {
-        usersRepository.deleteById(id);
-    }
-
-    public List<Role> getAllRoles() {
-        return (List<Role>) rolesRepository.findAll();
-    }
-
-    public Role getRoleById(Integer id) {
-        return rolesRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Role.class, id.longValue()));
-    }
-
-
+	
+	private final UsersRepository usersRepository;
+	
+	private final RolesRepository rolesRepository;
+	
+	
+	public UsersService(UsersRepository usersRepository, RolesRepository rolesRepository,
+						ImagesRepository imagesRepository) {
+		this.usersRepository = usersRepository;
+		this.rolesRepository = rolesRepository;
+	}
+	
+	private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+	
+	public User get(Long id) {
+		return usersRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(User.class, id));
+	}
+	
+	public User getByName(String name) {
+		return usersRepository.findByName(name);
+	}
+	
+	public List<User> getAll() {
+		return (List<User>) usersRepository.findAll();
+	}
+	
+	public void save(User user) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		usersRepository.save(user);
+	}
+	
+	public void update(User user) {
+		usersRepository.save(user);
+	}
+	
+	public void remove(Long id) {
+		usersRepository.deleteById(id);
+	}
+	
+	public List<Role> getAllRoles() {
+		return (List<Role>) rolesRepository.findAll();
+	}
+	
 }

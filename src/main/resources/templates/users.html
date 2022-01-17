@@ -32,11 +32,9 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/home" class="nav-link px-2 text-white">Домашняя</a></li>
                 <li><a href="/rooms" class="nav-link px-2 text-white">Номера</a></li>
                 <li><a href="/reservations" class="nav-link px-2 text-white">Бронирования</a></li>
                 <li><a href="/users" class="nav-link px-2 text-secondary">Пользователи</a></li>
-                <li><a href="/about" class="nav-link px-2 text-white">О нас</a></li>
             </ul>
 
             <div class="text-end">
@@ -51,7 +49,8 @@
     <div class="list-group">
         <a class="list-group-item list-group-item-action" th:each="user : ${users}">
             <div class="d-flex w-100 justify-content-between">
-                <img th:if="${user.getImage() != null}" th:src="'/images/' + ${user.getImage().getId()}" class="rounded-circle">
+                <img th:if="${user.getImage() != null}" th:src="'/images/' + ${user.getImage().getId()}"
+                     class="rounded-circle">
                 <img th:if="${user.getImage() == null}" src="/image/placeholder.png" class="rounded-circle">
                 <form sec:authorize="hasAuthority('ROLE_ADMIN')"
                       th:action="@{'/users/delete/{id}'(id=${user.getId()})}" method="POST">

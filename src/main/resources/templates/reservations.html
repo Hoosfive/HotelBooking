@@ -30,11 +30,9 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/home" class="nav-link px-2 text-white">Домашняя</a></li>
                 <li><a href="/rooms" class="nav-link px-2 text-white">Номера</a></li>
                 <li><a href="/reservations" class="nav-link px-2 text-secondary">Бронирования</a></li>
                 <li><a href="/users" class="nav-link px-2 text-white">Пользователи</a></li>
-                <li><a href="/about" class="nav-link px-2 text-white">О нас</a></li>
             </ul>
 
             <div class="text-end">
@@ -47,7 +45,7 @@
 </header>
 
 <div class="container mt-4">
-    <div class="list-group">
+    <div class="list-group" th:unless="${reservations.isEmpty()}">
         <a class="list-group-item list-group-item-action" th:each="reservation : ${reservations}">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1"
@@ -65,6 +63,7 @@
             <small th:text="'Забронировал: ' + ${reservation.getUser().getName()}"></small>
         </a>
     </div>
+    <h3 th:if="${reservations.isEmpty()}">Вы пока ничего не бронировали</h3>
 </div>
 </body>
 </html>

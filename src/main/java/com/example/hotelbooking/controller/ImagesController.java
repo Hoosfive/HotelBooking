@@ -14,30 +14,30 @@ import java.io.InputStream;
 @RestController
 @RequestMapping("/images")
 public class ImagesController {
-
-    private final ImagesService imagesService;
-
-    public ImagesController(ImagesService imagesService) {
-        this.imagesService = imagesService;
-    }
-
-    @GetMapping("/{image_id}")
-    public void getImage(@PathVariable Long image_id, HttpServletResponse response) throws IOException {
-        Image image = imagesService.get(image_id);
-        String imageExtension = image.getName().substring(image.getName().lastIndexOf("."));
-        response.setContentType("image/" + (imageExtension.isEmpty() ? "jpeg" : imageExtension));
-        InputStream is = new ByteArrayInputStream(image.getPictureBytes());
-        IOUtils.copy(is, response.getOutputStream());
-    }
-
-    @PostMapping("/add")
-    public void uploadImage(@RequestParam(value = "file") MultipartFile file) {
-
-        imagesService.save(file);
-    }
-
-    @PostMapping("/delete/{image_id}")
-    public void deleteImage(@PathVariable Long image_id) {
-        imagesService.remove(image_id);
-    }
+	
+	private final ImagesService imagesService;
+	
+	public ImagesController(ImagesService imagesService) {
+		this.imagesService = imagesService;
+	}
+	
+	@GetMapping("/{image_id}")
+	public void getImage(@PathVariable Long image_id, HttpServletResponse response) throws IOException {
+		Image image = imagesService.get(image_id);
+		String imageExtension = image.getName().substring(image.getName().lastIndexOf("."));
+		response.setContentType("image/" + (imageExtension.isEmpty() ? "jpeg" : imageExtension));
+		InputStream is = new ByteArrayInputStream(image.getPictureBytes());
+		IOUtils.copy(is, response.getOutputStream());
+	}
+	
+	@PostMapping("/add")
+	public void uploadImage(@RequestParam(value = "file") MultipartFile file) {
+		
+		imagesService.save(file);
+	}
+	
+	@PostMapping("/delete/{image_id}")
+	public void deleteImage(@PathVariable Long image_id) {
+		imagesService.remove(image_id);
+	}
 }

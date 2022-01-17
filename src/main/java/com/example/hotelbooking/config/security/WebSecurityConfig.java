@@ -18,65 +18,48 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+	
 	@Autowired
 	private MyUserDetailsService myUserDetailsService;
-
+	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new MyUserDetailsService();
 	}
-
+	
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
-
+		
 		return authProvider;
 	}
-
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-					.antMatchers("/", "/home", "/js/**", "/css/**").permitAll()
-					.mvcMatchers(HttpMethod.POST, "/rooms/**", "/reservations/**", "/users/**")
-					.hasRole("ADMIN")
-					.anyRequest()
-					.authenticated()
-				.and()
-					.formLogin()
-					.loginPage("/login")
-					.permitAll()
-				.and()
-					.logout()
-					.permitAll()
-				.and()
-					.httpBasic();
-
+		http.authorizeRequests().antMatchers("/", "/js/**", "/css/**").permitAll()
+				.mvcMatchers(HttpMethod.POST, "/rooms/**", "/reservations/**", "/users/**").hasRole("ADMIN")
+				.anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and().logout()
+				.permitAll().and().httpBasic();
+		
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-
+		
 	}
-
+	
 	@Bean
-	public AccessDeniedHandler accessDeniedHandler(){
+	public AccessDeniedHandler accessDeniedHandler() {
 		return new CustomAccessDeniedHandler();
 	}
-
-//...
-	/*@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(myUserDetailsService).passwordEncoder(new BCryptPasswordEncoder()).
-	}*/
+	
 }

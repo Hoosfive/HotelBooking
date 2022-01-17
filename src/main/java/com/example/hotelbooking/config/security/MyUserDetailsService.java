@@ -18,18 +18,19 @@ import java.util.Set;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
-
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = usersRepository.findByName(username);
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority((role.getName())));
-        }
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), grantedAuthorities);
-    }
+	
+	@Autowired
+	private UsersRepository usersRepository;
+	
+	@Override
+	@Transactional(readOnly = true)
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = usersRepository.findByName(username);
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+		for (Role role : user.getRoles()) {
+			grantedAuthorities.add(new SimpleGrantedAuthority((role.getName())));
+		}
+		return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
+				grantedAuthorities);
+	}
 }
