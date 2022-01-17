@@ -20,7 +20,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	MyUserDetailsService myUserDetailsService;
+	private MyUserDetailsService myUserDetailsService;
 
 	@Bean
 	public UserDetailsService userDetailsService() {

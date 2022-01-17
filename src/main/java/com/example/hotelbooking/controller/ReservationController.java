@@ -1,9 +1,9 @@
 package com.example.hotelbooking.controller;
 
 import com.example.hotelbooking.entity.Reservation;
-import com.example.hotelbooking.entity.User;
 import com.example.hotelbooking.service.ReservationsService;
 import com.example.hotelbooking.service.RoomsService;
+import com.example.hotelbooking.service.UsersService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,10 +18,12 @@ public class ReservationController {
 
     private final RoomsService roomsService;
 
-    public ReservationController(ReservationsService reservationsService, RoomsService roomsService) {
-        this.reservationsService = reservationsService;
+    private final UsersService usersService;
 
+    public ReservationController(ReservationsService reservationsService, RoomsService roomsService, UsersService usersService) {
+        this.reservationsService = reservationsService;
         this.roomsService = roomsService;
+        this.usersService = usersService;
     }
 
     @GetMapping("/{reservation_id}")
@@ -47,12 +49,12 @@ public class ReservationController {
 
     @PostMapping("/add/{room_id}")
     public String addReservationWithRoomId(@PathVariable Long room_id,
-                                           @ModelAttribute(value = "reservation") Reservation reservation) {
+                                           @ModelAttribute(value = "new_reservation") Reservation reservation) {
         reservation.setRoom(roomsService.get(room_id));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        reservation.setUser((User) auth.getPrincipal());
+        reservation.setUser(usersService.getByName(auth.getName()));
         reservationsService.save(reservation);
-        return "redirect:/reservations";
+        return "redirect:/rooms";
     }
 
     @PostMapping("/edit")

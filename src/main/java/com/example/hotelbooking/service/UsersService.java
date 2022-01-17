@@ -31,6 +31,10 @@ public class UsersService {
         return usersRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(User.class, id));
     }
 
+    public User getByName(String name) {
+        return usersRepository.findByName(name);
+    }
+
     public List<User> getAll() {
         return (List<User>) usersRepository.findAll();
     }

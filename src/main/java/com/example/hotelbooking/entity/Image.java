@@ -71,7 +71,6 @@ public class Image {
         return outputStream.toByteArray();
     }
 
-    // uncompress the image bytes before returning it to the angular application
     private static byte[] decompressBytes(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);

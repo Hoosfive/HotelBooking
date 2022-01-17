@@ -60,7 +60,6 @@
                 <div th:id="'myCarousel' + ${i.index}" class="carousel slide" data-bs-ride="carousel">
 
                     <div class="carousel-inner">
-
                         <div th:unless="${room.getImages().isEmpty()}" th:each="image, i : ${room.getImages()}"
                              class="carousel-item" th:classappend="${i.index == 0} ? 'active' : '' ">
                             <img th:src="'/images/' + ${image.getId()}" class="d-block w-100" alt="Фото номера">
@@ -77,15 +76,14 @@
                                     <button type="submit" class="btn btn-dark">Загрузить фото номера</button>
                                 </div>
                             </form>
-
                         </div>
 
                         <div class="carousel-item active" sec:authorize="!hasAuthority('ROLE_ADMIN')"
                              th:if="${room.getImages().isEmpty()}">
                             <img src="/image/placeholder.png" class="d-block w-100" alt="Нет фото">
                         </div>
-
                     </div>
+
                     <button class="carousel-control-prev" type="button" th:data-bs-target="'#myCarousel' + ${i.index}"
                             data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -105,9 +103,8 @@
                         th:text="'Этаж №' + ${room.getFloor()} + ', комната №' + ${room.getRoomNumber()}"></h5>
                     <p class="card-title" th:text="'Стоимость: ' + ${room.getPrice()} + '₽/сут.'"></p>
                     <button id="reserveButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#bookingModal"
-                            th:data-room-id="${room.getId()}" th:data-room-num="${room.getRoomNumber()}"
-                            th:data-room-floor="${room.getFloor()}">Забронировать
+                            th:data-bs-target="${'#bookingModal' + room.getId()}">
+                        Забронировать
                     </button>
 
                     <form sec:authorize="hasAuthority('ROLE_ADMIN')"
@@ -118,8 +115,51 @@
                     </form>
                 </div>
                 <!--------------/ТЕЛО КАРТОЧКИ------------------->
-
             </div>
+
+            <!--------------ОКНО БРОНИРОВАНИЯ НОМЕРА------------------->
+
+            <div class="modal fade" th:id="${'bookingModal' + room.getId()}" tabindex="-1"
+                 aria-labelledby="bookingModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bookingModalLabel">
+                                <span th:text="${'Бронирование комнаты №' + room.getRoomNumber() + ' на ' + room.getFloor() + ' этаже'}"></span>
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{'/reservations/add/{room_id}'(room_id=${room.getId()})}"
+                              th:object="${new_reservation}" method="post">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Дата заселения:</label>
+                                    <input type="date" class="form-control"
+                                           th:field="${new_reservation.dateStart}"
+                                           th:name="${'inputStartDate' + room.getId()}" id="recipient-name"
+                                           placeholder="Например: 23-01-2022">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message-text" class="col-form-label">Дата выезда:</label>
+                                    <input type="date" class="form-control"
+                                           th:field="${new_reservation.dateEnd}"
+                                           th:name="${'inputEndDate' + room.getId()}"
+                                           id="message-text" placeholder="Например: 15-09-2022">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                <button type="submit" class="btn btn-primary">Забронировать</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--------------/ОКНО БРОНИРОВАНИЯ НОМЕРА------------------->
+
         </div>
         <!--------------КАРТОЧКА ДЛЯ ДОБАВЛЕНИЯ КОМНАТ------------------->
         <div class="col" sec:authorize="hasAuthority('ROLE_ADMIN')">
@@ -156,61 +196,7 @@
 </div>
 <!--------------/КОНТЕЙНЕР КАРТОЧЕК КОМНАТ------------------->
 
-<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="bookingModalLabel">
-                    Бронирование комнаты
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form th:action="@{'/reservations/add/'}" th:object="${new_reserve}" method="post">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Дата заселения:</label>
-                        <input type="date"  class="form-control 123-input-datepicker" th:field="${new_reserve.dateStart}"
-                               name="inputStartDate_id_" id="recipient-name" placeholder="Например: 23-01-2022">
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Дата выезда:</label>
-                        <input type="date" class="form-control 123-input-datepicker" th:field="${new_reserve.dateEnd}"
-                               name="inputEndDate_id_"
-                               id="message-text" placeholder="Например: 23-09-2022">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Send message</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-
-<script>
-    $('.reserveButton').click(function () {
-        //clone dialog and remove ids to ensure uniqueness
-        let $modal = $('#editModalTemplate').clone().removeAttr('id');
-
-        //apply custom values where needed
-        let $btn = $(this);
-        let roomId = $btn.attr('data-room-id');
-
-        $modal.find('[name="id"]').val($btn.attr('data-id'));
-        $modal.find('form').attr('action').apply(roomId);
-        $modal.find('input').attr('name').replace('inputStartDate_id_', 'inputStartDate' + roomId);
-        $modal.find('input').attr('name').replace('inputEndDate_id_', 'inputEndDate' + roomId);
-
-        //show dialog
-        $modal.modal();
-    });
-</script>
-
-<!-- JavaScript Bundle with Popper -->
 <script src="/js/bootstrap.bundle.min.js"></script>
-<script src="/js/jquery.min.js"></script>
 
 </body>
 </html>

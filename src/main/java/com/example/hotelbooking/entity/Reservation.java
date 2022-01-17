@@ -29,6 +29,8 @@ public class Reservation {
 
     @Transient
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    @Transient
+    private SimpleDateFormat simpleDateFormatEn = new SimpleDateFormat("yyyy-MM-dd");
 
     public Timestamp getDateEnd() {
         return dateEnd;
@@ -42,24 +44,20 @@ public class Reservation {
         return simpleDateFormat.format(dateStart.getTime());
     }
 
-    public void setDateEnd(Timestamp dateEnd) {
-        this.dateEnd = dateEnd;
-    }
+
 
     public void setDateEnd(String dateEnd) throws ParseException {
-        this.dateEnd = new Timestamp(simpleDateFormat.parse(dateEnd).getTime());
+        this.dateEnd = new Timestamp(simpleDateFormatEn.parse(dateEnd).getTime());
     }
 
     public Timestamp getDateStart() {
         return dateStart;
     }
 
-    public void setDateStart(Timestamp dateStart) {
-        this.dateStart = dateStart;
-    }
+
 
     public void setDateStart(String dateStart) throws ParseException {
-        this.dateEnd = new Timestamp(simpleDateFormat.parse(dateStart).getTime());
+        this.dateStart = new Timestamp(simpleDateFormatEn.parse(dateStart).getTime());
     }
 
     public Room getRoom() {

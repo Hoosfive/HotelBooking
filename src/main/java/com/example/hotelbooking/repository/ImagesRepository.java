@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImagesRepository extends CrudRepository<Image, Long> {
 
-    //Image findFirstByIdIsNear(Long id);
-
 }

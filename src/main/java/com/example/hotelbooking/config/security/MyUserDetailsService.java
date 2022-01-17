@@ -20,7 +20,7 @@ import java.util.Set;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UsersRepository usersRepository;
+    private UsersRepository usersRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -31,6 +31,5 @@ public class MyUserDetailsService implements UserDetailsService {
             grantedAuthorities.add(new SimpleGrantedAuthority((role.getName())));
         }
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), grantedAuthorities);
-
     }
 }
