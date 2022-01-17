@@ -2,6 +2,7 @@ package com.example.hotelbooking.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 @Entity
@@ -16,8 +17,8 @@ public class Reservation {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "room_id", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @Column(name = "date_start", nullable = false)
@@ -26,20 +27,27 @@ public class Reservation {
     @Column(name = "date_end", nullable = false)
     private Timestamp dateEnd;
 
+    @Transient
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
     public Timestamp getDateEnd() {
         return dateEnd;
     }
 
     public String getDateEndAsString() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(dateEnd.getTime());
+        return simpleDateFormat.format(dateEnd.getTime());
     }
 
     public String getDateStartAsString() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(dateStart.getTime());
+        return simpleDateFormat.format(dateStart.getTime());
     }
 
     public void setDateEnd(Timestamp dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public void setDateEnd(String dateEnd) throws ParseException {
+        this.dateEnd = new Timestamp(simpleDateFormat.parse(dateEnd).getTime());
     }
 
     public Timestamp getDateStart() {
@@ -48,6 +56,10 @@ public class Reservation {
 
     public void setDateStart(Timestamp dateStart) {
         this.dateStart = dateStart;
+    }
+
+    public void setDateStart(String dateStart) throws ParseException {
+        this.dateEnd = new Timestamp(simpleDateFormat.parse(dateStart).getTime());
     }
 
     public Room getRoom() {

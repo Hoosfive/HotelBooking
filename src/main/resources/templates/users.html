@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/headers.css" rel="stylesheet">
     <link href="/css/users.css" rel="stylesheet">
 
@@ -52,7 +51,8 @@
     <div class="list-group">
         <a class="list-group-item list-group-item-action" th:each="user : ${users}">
             <div class="d-flex w-100 justify-content-between">
-                <img src="/image/placeholder.png" class="rounded-circle">
+                <img th:if="${user.getImage() != null}" th:src="'/images/' + ${user.getImage().getId()}" class="rounded-circle">
+                <img th:if="${user.getImage() == null}" src="/image/placeholder.png" class="rounded-circle">
                 <form sec:authorize="hasAuthority('ROLE_ADMIN')"
                       th:action="@{'/users/delete/{id}'(id=${user.getId()})}" method="POST">
                     <button type="submit" class="btn btn btn-danger mt-2">
@@ -82,53 +82,15 @@
                        th:field="${new_user.password}">
                 <ul class="list-group">
                     <li class="list-group-item" th:each="role : ${possible_roles}">
-                        <input class="form-check-input me-1" type="checkbox" th:field="*{rolesIds}" th:value="${role.getId()}" aria-label="..."
+                        <input class="form-check-input me-1" type="checkbox" th:field="*{rolesIds}"
+                               th:value="${role.getId()}" aria-label="..."
                                th:text="${role.getName()}">
-                        <!--<input class="form-check-input me-1" type="checkbox" th:field="${is_user_admin}" name="is_user_admin" aria-label="..."
-                               th:value="false" th:text="${'Дать пользователю роль ADMIN?'}">-->
                     </li>
                 </ul>
             </form>
         </a>
 
-
-        <!--<div class="col" sec:authorize="hasAuthority('ROLE_ADMIN')">
-            <div class="add-card card text-center border-dark m-3">
-                <form th:action="@{/rooms/add}" th:object="${new_room}" method="post"
-                      enctype="multipart/form-data">
-                    <div class="form-group">
-                        <div class="mb-3">
-                            <input class="form-control" type="file" name="file">
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input type="text" placeholder="Этаж №" class="form-control"
-                                   th:field="${new_room.roomNumber}">
-                            <input type="text" placeholder="комната №" class="form-control"
-                                   th:field="${new_room.floor}">
-                        </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" th:field="${new_room.price}"
-                                   placeholder="Стоимость суток проживания">
-                            <span class="input-group-text">₽/сут.</span>
-                        </div>
-                        <button type="submit" class="btn btn-success mt-2">
-                            Добавить номер
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>-->
-
-
     </div>
 </div>
-<!--<br>
-<form action="#" th:action="@{'/rooms/add'(id=${room.id})}" method="POST" >
-    <button type="submit" class="btn" >
-        Добавить
-    </button>
-</form>-->
 </body>
 </html>

@@ -19,7 +19,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @JoinColumn(name = "image_id")
     private Image image;
 

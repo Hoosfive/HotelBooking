@@ -1,5 +1,6 @@
 package com.example.hotelbooking.controller;
 
+import com.example.hotelbooking.entity.Reservation;
 import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.service.ImagesService;
 import com.example.hotelbooking.service.RoomsService;
@@ -37,7 +38,9 @@ public class RoomController {
             if (!errorMessage.isEmpty())
                 model.addAttribute("error", errorMessage);
         Room new_room = new Room();
+        Reservation new_reserve = new Reservation();
         model.addAttribute("new_room", new_room);
+        model.addAttribute("new_reserve", new_reserve);
         return "rooms";
     }
 
@@ -61,6 +64,12 @@ public class RoomController {
         roomsService.remove(room_id);
         return "redirect:/rooms";
     }
+
+    /*@GetMapping("/reserveDialog/{room_id}")
+    public String reserveDialog(@PathVariable Long room_id, Model model) {
+        model.addAttribute("room", roomsService.get(room_id));
+        return "modal";
+    }*/
 
     @PostMapping("/{room_id}/addImage")
     public String addRoomImage(@PathVariable Long room_id, @RequestParam(value = "file") MultipartFile file) {
