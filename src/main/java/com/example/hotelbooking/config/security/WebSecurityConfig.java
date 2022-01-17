@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/", "/js/**", "/css/**").permitAll()
-				.mvcMatchers(HttpMethod.POST, "/rooms/**", "/reservations/**", "/users/**").hasRole("ADMIN")
+				.mvcMatchers(HttpMethod.POST, "/rooms/**", "/users/**").hasRole("ADMIN")
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and().logout()
 				.permitAll().and().httpBasic();
 		

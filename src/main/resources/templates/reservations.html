@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+>
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -51,8 +51,7 @@
                 <h5 class="mb-1"
                     th:text="'Этаж №' + ${reservation.getRoom().getFloor()} + ', комната №' + ${reservation.getRoom().getRoomNumber()}">
                 </h5>
-                <form sec:authorize="hasAuthority('ROLE_ADMIN')"
-                      th:action="@{'/reservations/delete/{id}'(id=${reservation.getId()})}" method="POST">
+                <form th:action="@{'/reservations/delete/{id}'(id=${reservation.getId()})}" method="POST">
                     <button type="submit" class="btn btn btn-danger mt-2">
                         Удалить
                     </button>
