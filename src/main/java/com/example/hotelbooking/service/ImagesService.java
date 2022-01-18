@@ -1,6 +1,6 @@
 package com.example.hotelbooking.service;
 
-import com.example.hotelbooking.ObjectNotFoundException;
+import com.example.hotelbooking.exception.ObjectNotFoundException;
 import com.example.hotelbooking.entity.Image;
 import com.example.hotelbooking.repository.ImagesRepository;
 import org.springframework.stereotype.Service;

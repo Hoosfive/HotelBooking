@@ -1,7 +1,7 @@
 package com.example.hotelbooking.service;
 
 
-import com.example.hotelbooking.ObjectNotFoundException;
+import com.example.hotelbooking.exception.ObjectNotFoundException;
 import com.example.hotelbooking.entity.Role;
 import com.example.hotelbooking.entity.User;
 import com.example.hotelbooking.repository.ImagesRepository;

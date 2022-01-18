@@ -1,4 +1,4 @@
-package com.example.hotelbooking.config.security;
+package com.example.hotelbooking.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

@@ -1,4 +1,4 @@
-package com.example.hotelbooking;
+package com.example.hotelbooking.exception;
 
 public class ObjectNotFoundException extends RuntimeException {
 	public ObjectNotFoundException(Class<?> object, Long id) {
